@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import opcodeLogo from "../../src-tauri/icons/icon.png";
+import happyVibeLogo from "/logo.svg";
 import type { CSSProperties } from "react";
 
 /**
@@ -66,8 +66,8 @@ export function StartupIntro({ visible }: { visible: boolean }) {
                   transition={{ duration: 0.9, ease: "easeOut" }}
                 />
                 <motion.img
-                  src={opcodeLogo}
-                  alt="opcode"
+                  src={happyVibeLogo}
+                  alt="HappyVibe"
                   className="h-20 w-20 rounded-lg shadow-sm"
                   transition={{ repeat: Infinity, repeatType: "loop", ease: "linear", duration: 0.5 }}
                 />
@@ -97,8 +97,8 @@ export default StartupIntro;
 function BrandText() {
   return (
     <div className="text-5xl font-extrabold tracking-tight brand-text">
-      <span className="brand-text-solid">opcode</span>
-      <span aria-hidden="true" className="brand-text-shimmer">opcode</span>
+      <span className="brand-text-solid">HappyVibe</span>
+      <span aria-hidden="true" className="brand-text-shimmer">HappyVibe</span>
     </div>
   );
 }

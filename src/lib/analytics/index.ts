@@ -26,9 +26,10 @@ class AnalyticsService {
     this.consentManager = ConsentManager.getInstance();
     
     // Default configuration - pulled from Vite environment variables
+    // Set VITE_POSTHOG_API_KEY and VITE_POSTHOG_HOST in .env to use your own PostHog account
     this.config = {
-      apiKey: 'phc_6seRe1SJkFckJU2qQWeeIy62kaSoaUbCsdVCm1TQZg8',
-      apiHost: 'https://us.i.posthog.com',
+      apiKey: import.meta.env.VITE_POSTHOG_API_KEY || 'phc_6seRe1SJkFckJU2qQWeeIy62kaSoaUbCsdVCm1TQZg8',
+      apiHost: import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com',
       persistence: 'localStorage',
       autocapture: false, // We'll manually track events
       disable_session_recording: true, // Privacy first
@@ -83,7 +84,7 @@ class AnalyticsService {
             anonymous: true,
             consent_date: settings.consentDate,
             app_type: 'desktop',
-            app_name: 'opcode',
+            app_name: 'happyvibe',
           });
           
           // Set initial screen
@@ -150,7 +151,7 @@ class AnalyticsService {
     const enhancedProperties = {
       ...sanitizedProperties,
       screen_name: this.currentScreen,
-      app_context: 'opcode_desktop',
+      app_context: 'happyvibe_desktop',
     };
     
     // Create event
@@ -234,7 +235,7 @@ class AnalyticsService {
           ...event.properties,
           $session_id: event.sessionId,
           timestamp: event.timestamp,
-          $current_url: `opcode://${event.properties?.screen_name || 'unknown'}`,
+          $current_url: `happyvibe://${event.properties?.screen_name || 'unknown'}`,
         });
       }
     });

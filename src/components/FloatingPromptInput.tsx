@@ -360,6 +360,11 @@ const FloatingPromptInputInner = (
 
   // Set up Tauri drag-drop event listener
   useEffect(() => {
+    // Only set up drag-drop listener in Tauri mode
+    if (!tauriGetCurrentWebviewWindow) {
+      return;
+    }
+
     // This effect runs only once on component mount to set up the listener.
     let lastDropTime = 0;
 

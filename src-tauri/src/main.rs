@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod auto_setup;
 mod checkpoint;
 mod claude_binary;
 mod commands;
@@ -43,6 +44,10 @@ use commands::storage::{
 };
 use commands::usage::{
     get_session_stats, get_usage_by_date_range, get_usage_details, get_usage_stats,
+};
+use auto_setup::{
+    auto_setup_on_launch, check_first_launch, complete_setup, get_setup_status,
+    install_mcp_server, register_mcp_server, skip_setup,
 };
 use process::ProcessRegistryState;
 use std::sync::Mutex;
@@ -289,6 +294,14 @@ fn main() {
             // Proxy Settings
             get_proxy_settings,
             save_proxy_settings,
+            // Auto Setup
+            check_first_launch,
+            get_setup_status,
+            install_mcp_server,
+            register_mcp_server,
+            complete_setup,
+            skip_setup,
+            auto_setup_on_launch,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

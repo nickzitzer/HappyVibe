@@ -418,7 +418,7 @@ export const UsageDashboard: React.FC<UsageDashboardProps> = ({ }) => {
 
                 {/* Models Tab - Lazy render and cache */}
                 <TabsContent value="models" className="space-y-6 mt-6">
-                  {hasLoadedTabs.has("models") && stats && (
+                  {hasLoadedTabs.has("models") && stats && stats.by_model && (
                     <div style={{ display: activeTab === "models" ? "block" : "none" }}>
                       <Card className="p-6">
                         <h3 className="text-sm font-semibold mb-4">Usage by Model</h3>
@@ -469,7 +469,7 @@ export const UsageDashboard: React.FC<UsageDashboardProps> = ({ }) => {
 
                 {/* Projects Tab - Lazy render and cache */}
                 <TabsContent value="projects" className="space-y-6 mt-6">
-                  {hasLoadedTabs.has("projects") && stats && (
+                  {hasLoadedTabs.has("projects") && stats && stats.by_project && (
                     <div style={{ display: activeTab === "projects" ? "block" : "none" }}>
                       <Card className="p-6">
                       <div className="flex items-center justify-between mb-4">

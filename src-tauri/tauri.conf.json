@@ -1,18 +1,18 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "opcode",
+  "productName": "HappyVibe",
   "version": "0.2.1",
-  "identifier": "opcode.asterisk.so",
+  "identifier": "com.happyvibe.desktop",
   "build": {
     "beforeDevCommand": "",
-    "beforeBuildCommand": "bun run build",
+    "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
   "app": {
     "macOSPrivateApi": true,
     "windows": [
       {
-        "title": "opcode",
+        "title": "HappyVibe - ServiceNow AI Development IDE",
         "width": 800,
         "height": 600,
         "decorations": false,
@@ -74,10 +74,10 @@
     ],
     "resources": [],
     "externalBin": [],
-    "copyright": "© 2025 Asterisk. All rights reserved.",
+    "copyright": "© 2025 HappyVibe. All rights reserved.",
     "category": "DeveloperTool",
-    "shortDescription": "GUI app and Toolkit for Claude Code",
-    "longDescription": "opcode is a comprehensive GUI application and toolkit for working with Claude Code, providing an intuitive interface for AI-assisted development.",
+    "shortDescription": "ServiceNow AI Development IDE powered by Claude Code",
+    "longDescription": "HappyVibe is a comprehensive ServiceNow development IDE powered by Claude Code and MCP (Model Context Protocol), providing an intuitive interface for AI-assisted ServiceNow development with 20+ automation tools.",
     "linux": {
       "appimage": {
         "bundleMediaFramework": true

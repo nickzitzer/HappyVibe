@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # HappyVibe Web Server
+  happyvibe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    environment:
+      - RUST_LOG=info
+    depends_on:
+      - mcp-servicenow
+    networks:
+      - happyvibe-network
+
+  # ServiceNow MCP Server
+  mcp-servicenow:
+    image: nczitzer/mcp-servicenow-nodejs:latest
+    container_name: happyvibe-mcp-servicenow
+    ports:
+      - "3100:3100"
+    environment:
+      # ServiceNow Instance Configuration
+      - SN_INSTANCE_URL=${SN_INSTANCE_URL:-https://dev276360.service-now.com}
+      - SN_USERNAME=${SN_USERNAME:-admin}
+      - SN_PASSWORD=${SN_PASSWORD}
+      # MCP Server Configuration
+      - MCP_SERVER_PORT=3100
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - happyvibe-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  happyvibe-network:
+    driver: bridge

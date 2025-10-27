@@ -170,6 +170,7 @@ function mapCommandToEndpoint(command: string, _params?: any): string {
     
     // Agent commands
     'list_agents': '/api/agents',
+    'list_agent_runs_with_metrics': '/api/agents/runs',
     'fetch_github_agents': '/api/agents/github',
     'fetch_github_agent_content': '/api/agents/github/content',
     'import_agent_from_github': '/api/agents/import/github',
@@ -198,6 +199,9 @@ function mapCommandToEndpoint(command: string, _params?: any): string {
     'get_usage_by_date_range': '/api/usage/range',
     'get_session_stats': '/api/usage/sessions',
     'get_usage_details': '/api/usage/details',
+
+    // Checkpoint manager
+    'clear_checkpoint_manager': '/api/checkpoint/clear',
     
     // Settings and configuration
     'get_claude_settings': '/api/settings/claude',

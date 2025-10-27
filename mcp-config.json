@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "servicenow": {
+      "command": "npx",
+      "args": ["servicenow-mcp-server"],
+      "env": {
+        "SN_INSTANCE_URL": "https://dev276360.service-now.com",
+        "SN_USERNAME": "admin",
+        "SN_PASSWORD": "$h4fG+9nAGeU"
+      },
+      "description": "ServiceNow MCP Server - 20+ tools for automated ServiceNow development",
+      "autoStart": true
+    }
+  }
+}

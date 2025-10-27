@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Network, 
-  Globe, 
-  Terminal, 
-  Trash2, 
-  Play, 
+import {
+  Network,
+  Globe,
+  Terminal,
+  Trash2,
+  Play,
   CheckCircle,
   Loader2,
   RefreshCw,
@@ -14,10 +14,15 @@ import {
   FileText,
   ChevronDown,
   ChevronUp,
-  Copy
+  Copy,
+  Pencil,
+  X,
+  Save
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { api, type MCPServer } from "@/lib/api";
 import { useTrackEvent } from "@/hooks";
 
@@ -55,7 +60,10 @@ export const MCPServerList: React.FC<MCPServerListProps> = ({
   const [expandedServers, setExpandedServers] = useState<Set<string>>(new Set());
   const [copiedServer, setCopiedServer] = useState<string | null>(null);
   const [connectedServers] = useState<string[]>([]);
-  
+  const [editingServer, setEditingServer] = useState<MCPServer | null>(null);
+  const [editEnvVars, setEditEnvVars] = useState<Record<string, string>>({});
+  const [savingEdit, setSavingEdit] = useState(false);
+
   // Analytics tracking
   const trackEvent = useTrackEvent();
 
@@ -129,15 +137,15 @@ export const MCPServerList: React.FC<MCPServerListProps> = ({
       setTestingServer(name);
       const result = await api.mcpTestConnection(name);
       const server = servers.find(s => s.name === name);
-      
+
       // Track connection result - result is a string message
       trackEvent.mcpServerConnected(name, true, server?.transport || 'unknown');
-      
+
       // TODO: Show result in a toast or modal
       console.log("Test result:", result);
     } catch (error) {
       console.error("Failed to test connection:", error);
-      
+
       trackEvent.mcpConnectionError({
         server_name: name,
         error_type: 'test_failed',
@@ -145,6 +153,70 @@ export const MCPServerList: React.FC<MCPServerListProps> = ({
       });
     } finally {
       setTestingServer(null);
+    }
+  };
+
+  /**
+   * Opens the edit modal for a server
+   */
+  const handleEditServer = (server: MCPServer) => {
+    setEditingServer(server);
+    setEditEnvVars({ ...server.env });
+  };
+
+  /**
+   * Closes the edit modal
+   */
+  const handleCancelEdit = () => {
+    setEditingServer(null);
+    setEditEnvVars({});
+  };
+
+  /**
+   * Updates environment variable
+   */
+  const updateEnvVar = (key: string, value: string) => {
+    setEditEnvVars(prev => ({ ...prev, [key]: value }));
+  };
+
+  /**
+   * Saves the edited server configuration
+   * Atomically removes the old config and adds the new one
+   */
+  const handleSaveEdit = async () => {
+    if (!editingServer) return;
+
+    try {
+      setSavingEdit(true);
+
+      // Step 1: Remove the old server
+      await api.mcpRemove(editingServer.name);
+
+      // Step 2: Add the server with updated configuration
+      await api.mcpAdd(
+        editingServer.name,
+        editingServer.transport,
+        editingServer.command,
+        editingServer.args,
+        editEnvVars, // Updated env vars
+        editingServer.url,
+        editingServer.scope || "local"
+      );
+
+      // Track the update
+      trackEvent.mcpServerAdded({
+        server_type: editingServer.transport,
+        configuration_method: "manual"
+      });
+
+      // Close modal and refresh
+      handleCancelEdit();
+      onRefresh();
+    } catch (error) {
+      console.error("Failed to update server:", error);
+      // TODO: Show error toast
+    } finally {
+      setSavingEdit(false);
     }
   };
 
@@ -264,6 +336,7 @@ export const MCPServerList: React.FC<MCPServerListProps> = ({
                 onClick={() => handleTestConnection(server.name)}
                 disabled={testingServer === server.name}
                 className="hover:bg-green-500/10 hover:text-green-600"
+                title="Test connection"
               >
                 {testingServer === server.name ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -274,9 +347,19 @@ export const MCPServerList: React.FC<MCPServerListProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => handleEditServer(server)}
+                className="hover:bg-blue-500/10 hover:text-blue-600"
+                title="Edit server configuration"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleRemoveServer(server.name)}
                 disabled={removingServer === server.name}
                 className="hover:bg-destructive/10 hover:text-destructive"
+                title="Remove server"
               >
                 {removingServer === server.name ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -380,55 +463,183 @@ export const MCPServerList: React.FC<MCPServerListProps> = ({
   }
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-base font-semibold">Configured Servers</h3>
-          <p className="text-sm text-muted-foreground">
-            {servers.length} server{servers.length !== 1 ? "s" : ""} configured
-          </p>
+    <>
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-base font-semibold">Configured Servers</h3>
+            <p className="text-sm text-muted-foreground">
+              {servers.length} server{servers.length !== 1 ? "s" : ""} configured
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRefresh}
+            className="gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/50"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRefresh}
-          className="gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/50"
-        >
-          <RefreshCw className="h-4 w-4" />
-          Refresh
-        </Button>
+
+        {/* Server List */}
+        {servers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="p-4 bg-primary/10 rounded-full mb-4">
+              <Network className="h-12 w-12 text-primary" />
+            </div>
+            <p className="text-muted-foreground mb-2 font-medium">No MCP servers configured</p>
+            <p className="text-sm text-muted-foreground">
+              Add a server to get started with Model Context Protocol
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {Object.entries(serversByScope).map(([scope, scopeServers]) => (
+              <div key={scope} className="space-y-3">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  {getScopeIcon(scope)}
+                  <span className="font-medium">{getScopeDisplayName(scope)}</span>
+                  <span className="text-muted-foreground/60">({scopeServers.length})</span>
+                </div>
+                <AnimatePresence>
+                  <div className="space-y-2">
+                    {scopeServers.map(renderServerItem)}
+                  </div>
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Server List */}
-      {servers.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="p-4 bg-primary/10 rounded-full mb-4">
-            <Network className="h-12 w-12 text-primary" />
-          </div>
-          <p className="text-muted-foreground mb-2 font-medium">No MCP servers configured</p>
-          <p className="text-sm text-muted-foreground">
-            Add a server to get started with Model Context Protocol
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {Object.entries(serversByScope).map(([scope, scopeServers]) => (
-            <div key={scope} className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                {getScopeIcon(scope)}
-                <span className="font-medium">{getScopeDisplayName(scope)}</span>
-                <span className="text-muted-foreground/60">({scopeServers.length})</span>
-              </div>
-              <AnimatePresence>
-                <div className="space-y-2">
-                  {scopeServers.map(renderServerItem)}
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {editingServer && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={handleCancelEdit}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card border border-border rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-500/10 rounded">
+                      <Pencil className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">Edit MCP Server</h3>
+                      <p className="text-sm text-muted-foreground">{editingServer.name}</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancelEdit}
+                    className="hover:bg-muted"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
-              </AnimatePresence>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* Server Info (Read-only) */}
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Transport Type</Label>
+                    <div className="flex items-center gap-2 mt-1">
+                      {getTransportIcon(editingServer.transport)}
+                      <Badge variant="outline">{editingServer.transport}</Badge>
+                    </div>
+                  </div>
+
+                  {editingServer.command && (
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Command</Label>
+                      <p className="text-sm font-mono bg-muted/50 p-2 rounded mt-1 break-all">
+                        {editingServer.command}
+                      </p>
+                    </div>
+                  )}
+
+                  {editingServer.url && (
+                    <div>
+                      <Label className="text-xs text-muted-foreground">URL</Label>
+                      <p className="text-sm font-mono bg-muted/50 p-2 rounded mt-1 break-all">
+                        {editingServer.url}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Environment Variables (Editable) */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold">Environment Variables</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Update credentials and configuration values below
+                  </p>
+                  <div className="space-y-3">
+                    {Object.entries(editEnvVars).map(([key, value]) => (
+                      <div key={key} className="space-y-2">
+                        <Label className="text-xs font-medium">{key}</Label>
+                        <Input
+                          type={key.toLowerCase().includes('password') ? 'password' : 'text'}
+                          value={value}
+                          onChange={(e) => updateEnvVar(key, e.target.value)}
+                          placeholder={`Enter ${key}`}
+                          className="font-mono text-sm"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-6 border-t border-border flex items-center justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={handleCancelEdit}
+                  disabled={savingEdit}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveEdit}
+                  disabled={savingEdit}
+                  className="gap-2"
+                >
+                  {savingEdit ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }; 

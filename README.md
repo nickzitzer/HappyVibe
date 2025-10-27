@@ -1,14 +1,14 @@
 
 <div align="center">
-  <img src="src-tauri/icons/icon.png" alt="opcode Logo" width="120" height="120">
+  <img src="src-tauri/icons/icon.png" alt="HappyVibe Logo" width="120" height="120">
 
-  <h1>opcode</h1>
-  
+  <h1>HappyVibe</h1>
+
   <p>
-    <strong>A powerful GUI app and Toolkit for Claude Code</strong>
+    <strong>ServiceNow AI Development IDE powered by Claude Code</strong>
   </p>
   <p>
-    <strong>Create custom agents, manage interactive Claude Code sessions, run secure background agents, and more.</strong>
+    <strong>Intelligent ServiceNow development with 20+ automation tools via MCP integration</strong>
   </p>
   
   <p>
@@ -36,9 +36,9 @@ https://github.com/user-attachments/assets/6bceea0f-60b6-4c3e-a745-b891de00b8d0
 
 ## 🌟 Overview
 
-**opcode** is a powerful desktop application that transforms how you interact with Claude Code. Built with Tauri 2, it provides a beautiful GUI for managing your Claude Code sessions, creating custom agents, tracking usage, and much more.
+**HappyVibe** is a comprehensive ServiceNow development IDE powered by Claude Code and MCP (Model Context Protocol). Built with Tauri 2, it provides an intuitive interface for AI-assisted ServiceNow development with 20+ automation tools.
 
-Think of opcode as your command center for Claude Code - bridging the gap between the command-line tool and a visual experience that makes AI-assisted development more intuitive and productive.
+Think of HappyVibe as your intelligent ServiceNow development companion - combining the power of Claude AI with direct ServiceNow integration through the servicenow-mcp-server, making ServiceNow development faster and more efficient.
 
 ## 📋 Table of Contents
 
@@ -87,11 +87,12 @@ Think of opcode as your command center for Claude Code - bridging the gap betwee
 - **Visual Charts**: Beautiful charts showing usage trends and patterns
 - **Export Data**: Export usage data for accounting and analysis
 
-### 🔌 **MCP Server Management**
-- **Server Registry**: Manage Model Context Protocol servers from a central UI
-- **Easy Configuration**: Add servers via UI or import from existing configs
-- **Connection Testing**: Verify server connectivity before use
-- **Claude Desktop Import**: Import server configurations from Claude Desktop
+### 🔌 **ServiceNow MCP Integration**
+- **First-Launch Setup Wizard**: Automated installation and configuration of servicenow-mcp-server
+- **20+ ServiceNow Tools**: Direct integration with ServiceNow via MCP tools
+- **Multi-Instance Support**: Manage multiple ServiceNow instances from a single MCP server
+- **Credential Management**: Securely store and edit ServiceNow credentials
+- **Server Configuration**: Edit MCP server settings including passwords through intuitive UI
 
 ### ⏰ **Timeline & Checkpoints**
 - **Session Versioning**: Create checkpoints at any point in your coding session
@@ -110,9 +111,13 @@ Think of opcode as your command center for Claude Code - bridging the gap betwee
 
 ### Getting Started
 
-1. **Launch opcode**: Open the application after installation
-2. **Welcome Screen**: Choose between CC Agents or Projects
-3. **First Time Setup**: opcode will automatically detect your `~/.claude` directory
+1. **Launch HappyVibe**: Open the application after installation
+2. **First-Launch Setup Wizard**: On first launch, HappyVibe will guide you through:
+   - Installing servicenow-mcp-server (if not already installed)
+   - Configuring your ServiceNow credentials (instance URL, username, password)
+   - Registering the MCP server with Claude Code
+3. **Welcome Screen**: Choose between CC Agents or Projects
+4. **Start Developing**: Begin AI-assisted ServiceNow development with 20+ integrated tools
 
 ### Managing Projects
 
@@ -145,23 +150,67 @@ Menu → Usage Dashboard → View Analytics
 - Export data for reports
 - Set up usage alerts (coming soon)
 
-### Working with MCP Servers
+### Working with ServiceNow MCP Server
 
 ```
-Menu → MCP Manager → Add Server → Configure
+Menu → MCP Manager → View/Edit ServiceNow Server
 ```
 
-- Add servers manually or via JSON
-- Import from Claude Desktop configuration
-- Test connections before using
+**First-Time Setup:**
+- The setup wizard automatically installs servicenow-mcp-server via npm
+- Prompts for your ServiceNow credentials
+- Registers the server with Claude Code automatically
+
+**Managing Credentials:**
+- Click the Edit button (pencil icon) on the servicenow server
+- Update instance URL, username, or password as needed
+- Changes are applied immediately
+
+**Available Tools:**
+The servicenow-mcp-server provides 20+ tools for:
+- Table operations (create, read, update, delete)
+- Script management (business rules, client scripts, UI policies)
+- Application scoping and update sets
+- User and group management
+- And much more
 
 ## 🚀 Installation
 
 ### Prerequisites
 
-- **Claude Code CLI**: Install from [Claude's official site](https://claude.ai/code)
+- **Claude Code CLI**: Install from [Anthropic's Claude Code](https://claude.ai/code)
+- **Node.js and npm**: Required for servicenow-mcp-server (the setup wizard will check for this)
 
-### Release Executables Will Be Published Soon
+### Download
+
+Download the latest release for your platform:
+- **macOS (Apple Silicon)**: `HappyVibe_[version]_aarch64.dmg`
+- **macOS (Intel)**: `HappyVibe_[version]_x64.dmg`
+- **Windows**: `HappyVibe_[version]_x64.msi`
+- **Linux**: `HappyVibe_[version]_amd64.deb` or `HappyVibe_[version]_amd64.AppImage`
+
+### First Launch
+
+When you first launch HappyVibe, the **Setup Wizard** will guide you through:
+
+1. **Checking Prerequisites**
+   - Verifies npm is installed
+   - Checks if Claude Code is installed
+
+2. **ServiceNow Configuration**
+   - Enter your ServiceNow instance URL (e.g., `https://dev12345.service-now.com`)
+   - Provide your ServiceNow username
+   - Provide your ServiceNow password
+
+3. **Automatic Installation**
+   - Installs servicenow-mcp-server globally via npm
+   - Registers the server with Claude Code
+   - Configures credentials securely
+
+4. **Ready to Go**
+   - Setup complete! Start developing with AI-powered ServiceNow tools
+
+**Note**: You can skip the setup and configure manually later through the MCP Manager.
 
 ## 🔨 Build from Source
 
@@ -240,43 +289,48 @@ brew install pkg-config
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/getAsterisk/opcode.git
-   cd opcode
+   git clone https://github.com/yourusername/HappyVibe.git
+   cd HappyVibe
    ```
 
 2. **Install Frontend Dependencies**
    ```bash
-   bun install
+   npm install
    ```
 
 3. **Build the Application**
-   
+
    **For Development (with hot reload)**
    ```bash
-   bun run tauri dev
+   npm run tauri dev
    ```
-   
+
    **For Production Build**
    ```bash
    # Build the application
-   bun run tauri build
-   
-   # The built executable will be in:
-   # - Linux: src-tauri/target/release/
-   # - macOS: src-tauri/target/release/
-   # - Windows: src-tauri/target/release/
+   npm run tauri build
+
+   # The built installers will be in:
+   # - macOS: src-tauri/target/release/bundle/dmg/
+   # - Linux: src-tauri/target/release/bundle/deb/ or appimage/
+   # - Windows: src-tauri/target/release/bundle/msi/
    ```
 
 4. **Platform-Specific Build Options**
-   
+
    **Debug Build (faster compilation, larger binary)**
    ```bash
-   bun run tauri build --debug
+   npm run tauri build -- --debug
    ```
-   
-   **Universal Binary for macOS (Intel + Apple Silicon)**
+
+   **DMG for macOS (Apple Silicon)**
    ```bash
-   bun run tauri build --target universal-apple-darwin
+   npm run tauri build -- --target aarch64-apple-darwin --bundles dmg
+   ```
+
+   **DMG for macOS (Intel)**
+   ```bash
+   npm run tauri build -- --target x86_64-apple-darwin --bundles dmg
    ```
 
 ### Troubleshooting
@@ -310,25 +364,24 @@ After building, you can verify the application works:
 ```bash
 # Run the built executable directly
 # Linux/macOS
-./src-tauri/target/release/opcode
+./src-tauri/target/release/happyvibe
 
 # Windows
-./src-tauri/target/release/opcode.exe
+./src-tauri/target/release/happyvibe.exe
 ```
 
 ### Build Artifacts
 
 The build process creates several artifacts:
 
-- **Executable**: The main opcode application
+- **Executable**: The main HappyVibe application binary
 - **Installers** (when using `tauri build`):
-  - `.deb` package (Linux)
-  - `.AppImage` (Linux)
-  - `.dmg` installer (macOS)
-  - `.msi` installer (Windows)
-  - `.exe` installer (Windows)
+  - `.deb` package (Linux) - in `bundle/deb/`
+  - `.AppImage` (Linux) - in `bundle/appimage/`
+  - `.dmg` installer (macOS) - in `bundle/dmg/`
+  - `.msi` installer (Windows) - in `bundle/msi/`
 
-All artifacts are located in `src-tauri/target/release/`.
+All artifacts are located in `src-tauri/target/release/bundle/`.
 
 ## 🛠️ Development
 
@@ -343,14 +396,18 @@ All artifacts are located in `src-tauri/target/release/`.
 ### Project Structure
 
 ```
-opcode/
+HappyVibe/
 ├── src/                   # React frontend
 │   ├── components/        # UI components
+│   │   ├── SetupWizard.tsx      # First-launch setup
+│   │   ├── MCPManager.tsx       # MCP server management
+│   │   └── MCPServerList.tsx    # Server list with edit
 │   ├── lib/               # API client & utilities
 │   └── assets/            # Static assets
 ├── src-tauri/             # Rust backend
 │   ├── src/
 │   │   ├── commands/      # Tauri command handlers
+│   │   ├── auto_setup.rs  # Setup wizard backend
 │   │   ├── checkpoint/    # Timeline management
 │   │   └── process/       # Process management
 │   └── tests/             # Rust test suite
@@ -361,30 +418,38 @@ opcode/
 
 ```bash
 # Start development server
-bun run tauri dev
+npm run tauri dev
 
 # Run frontend only
-bun run dev
+npm run dev
 
 # Type checking
-bunx tsc --noEmit
+npm run type-check
+
+# Build frontend
+npm run build
 
 # Run Rust tests
 cd src-tauri && cargo test
 
 # Format code
 cd src-tauri && cargo fmt
+
+# Reset setup wizard for testing
+rm -f ~/Library/Application\ Support/com.happyvibe.desktop/setup_state.json
 ```
 
 ## 🔒 Security
 
-opcode prioritizes your privacy and security:
+HappyVibe prioritizes your privacy and security:
 
-1. **Process Isolation**: Agents run in separate processes
-2. **Permission Control**: Configure file and network access per agent
-3. **Local Storage**: All data stays on your machine
-4. **No Telemetry**: No data collection or tracking
-5. **Open Source**: Full transparency through open source code
+1. **Local Credential Storage**: ServiceNow credentials are stored securely on your machine
+2. **Process Isolation**: Agents run in separate processes
+3. **Permission Control**: Configure file and network access per agent
+4. **MCP Protocol**: Secure communication with ServiceNow via MCP
+5. **No Cloud Storage**: All data stays on your local machine
+6. **Anonymous Analytics**: Optional PostHog analytics (can be disabled)
+7. **Open Source**: Full transparency through open source code
 
 ## 🤝 Contributing
 
@@ -412,16 +477,11 @@ This project is licensed under the AGPL License - see the [LICENSE](LICENSE) fil
 
 <div align="center">
   <p>
-    <strong>Made with ❤️ by the <a href="https://asterisk.so/">Asterisk</a></strong>
+    <strong>Made with ❤️ for ServiceNow Developers</strong>
   </p>
   <p>
-    <a href="https://github.com/getAsterisk/opcode/issues">Report Bug</a>
+    <a href="https://github.com/yourusername/HappyVibe/issues">Report Bug</a>
     ·
-    <a href="https://github.com/getAsterisk/opcode/issues">Request Feature</a>
+    <a href="https://github.com/yourusername/HappyVibe/issues">Request Feature</a>
   </p>
 </div>
-
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=getAsterisk/opcode&type=Date)](https://www.star-history.com/#getAsterisk/opcode&Date)

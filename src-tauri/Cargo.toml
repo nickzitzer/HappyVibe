@@ -1,23 +1,24 @@
 [package]
-name = "opcode"
+name = "happyvibe"
 version = "0.2.1"
-description = "GUI app and Toolkit for Claude Code"
-authors = ["mufeedvh", "123vviekr"]
+description = "ServiceNow AI Development IDE powered by Claude Code"
+authors = ["HappyVibe Team"]
 license = "AGPL-3.0"
 edition = "2021"
+default-run = "happyvibe"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[bin]]
-name = "opcode"
+name = "happyvibe"
 path = "src/main.rs"
 
 [lib]
-name = "opcode_lib"
+name = "happyvibe_lib"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [[bin]]
-name = "opcode-web"
+name = "happyvibe-web"
 path = "src/web_main.rs"
 
 [build-dependencies]
